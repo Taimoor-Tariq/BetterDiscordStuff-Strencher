@@ -1,6 +1,6 @@
 /**
  * @name VoiceChatNotifications
- * @version 1.2.2
+ * @version 1.2.1
  * @description Shows you certain events from voicechats in a logs panel or as desktop notification.
  * @author Strencher
  * @source https://github.com/Strencher/BetterDiscordStuff/tree/master/VoiceChatNotifications
@@ -32,7 +32,7 @@
 const config = {
 	"info": {
 		"name": "VoiceChatNotifications",
-		"version": "1.2.2",
+		"version": "1.2.1",
 		"description": "Shows you certain events from voicechats in a logs panel or as desktop notification.",
 		"authors": [{
 			"name": "Strencher",
@@ -42,21 +42,14 @@ const config = {
 		"github": "https://github.com/Strencher/BetterDiscordStuff/tree/master/VoiceChatNotifications",
 		"github_raw": "https://raw.githubusercontent.com/Strencher/BetterDiscordStuff/master/VoiceChatNotifications/VoiceChatNotifications.plugin.js"
 	},
-	"changelog": [
-		{
-			"title": "New Stuff",
-			"items": [
-				"Added setting to disable notifications for stages."
-			]
-		},
-		{
-			"type": "fixed",
-			"title": "Fixes",
-			"items": [
-				"Fixed Settings."
-			]
-		}
-	],
+	"changelog": [{
+		"type": "fixed",
+		"title": "Fixes",
+		"items": [
+			"Discord update fixes #2",
+			"Fix typo"
+		]
+	}],
 	"build": {
 		"zlibrary": true,
 		"copy": true,
@@ -654,11 +647,6 @@ function buildPlugin([BasePlugin, PluginApi]) {
 						note: "Suppress desktop notifications in DND, this automatically enables the In-App notification api.",
 						name: "Suppress in DND"
 					},
-					disableInStage: {
-						value: false,
-						note: "Disables notifications from triggering in stage channels.",
-						name: "Disable in Stage Channels"
-					},
 					notifications: {
 						value: true,
 						note: "Defines if notifications should be shown when an event happens in your current call.",
@@ -669,12 +657,11 @@ function buildPlugin([BasePlugin, PluginApi]) {
 					return external_BdApi_React_default().createElement("div", null, external_BdApi_React_default().createElement(Category, {
 						label: "General",
 						look: Category.Looks.COMPACT
-					}, Object.keys(otherSettings).map(((key) => external_BdApi_React_default().createElement(SwitchItem, Settings_extends({}, key, {
+					}, Object.keys(otherSettings).map((key => external_BdApi_React_default().createElement(SwitchItem, Settings_extends({}, otherSettings[key], {
 						value: settings.get(key, otherSettings[key].value),
 						onChange: value => {
 							settings.set(key, value);
-						},
-						note: otherSettings[key].note
+						}
 					}), otherSettings[key].name))), external_BdApi_React_default().createElement(forms_namespaceObject.FormItem, {
 						title: "InApp Notifications"
 					}, external_BdApi_React_default().createElement(NotificationSetting, {
@@ -1055,7 +1042,6 @@ function buildPlugin([BasePlugin, PluginApi]) {
 						timestamp,
 						channelId
 					}) {
-						if (settings.get("disableInStage", false) && stores_namespaceObject.Channels.getChannel(channelId)?.type === 13) return;
 						if (!settings.get("notifications", true) || LogsPanel.Store.getState().paused) return;
 						const useInApp = settings.get("suppressInDnd", true) && "dnd" === SettingsStore.status || "disabled" !== settings.get("inappPosition", "topLeft");
 						if (useInApp) show(VoiceChatNotifications_React.createElement(VoiceChatNotifications_React.Fragment, null, VoiceChatNotifications_React.createElement(AnimatedAvatar, {
